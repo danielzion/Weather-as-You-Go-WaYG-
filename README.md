@@ -13,7 +13,7 @@
 
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white)
 
-![Google-Cloud](https://img.shields.io/badge/Google Cloud-4285F4?style=flat-square&logo=Google Cloud&logoColor=white)
+![Google Cloud](https://img.shields.io/badge/Google Cloud-4285F4?style=flat-square&logo=Google Cloud&logoColor=white)
 
 ![jQuery](https://img.shields.io/badge/jQuery-0769AD?style=flat-square&logo=jQuery&logoColor=white)
 
@@ -28,7 +28,7 @@
 
 # Weather as You Go 
 
-![Live-Demo]()
+![Live-Demo](https://WeatherAsYouGo.danielzion.repl.co)
 
 Weather as You Go (WaYG) is a Team project. This App was intended to be a single-page app, which makes use of Open Weather API. This API contains the weather information of different locations and weather forecasts such as temperature, humidity, wind speed etc.
  
