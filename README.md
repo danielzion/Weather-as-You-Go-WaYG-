@@ -199,4 +199,4 @@ A GitHub account will be created for the project. The team will be divided into 
  
 
 ## 🚀 About Us 
-- We are students of [Google Africa Developers Scholarship](https://training.zuri.team) 2022. We are currently working as Climate Team 6 on a Weather Station App. With our exquisite team of experienced Developers, we hope to deliver a world class web app. We hope our project helps you in your coding journey :v::blush::crossed_fingers:
+- We are students of [Google Africa Developers Scholarship](#) 2022. We are currently working as Climate Team 6 on a Weather Station App. With our exquisite team of experienced Developers, we hope to deliver a world class web app. We hope our project helps you in your coding journey :v::blush::crossed_fingers:
