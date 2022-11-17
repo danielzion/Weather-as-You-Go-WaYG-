@@ -10,7 +10,7 @@ import pandas as pd
 
 
 # website url to be scrapped
-url = "https://www.bbc.com/news/science-environment-56837908"
+url = "https://news.un.org/en/news/topic/climate-change"
 
 # getting the url request
 url_request = requests.get(url)
@@ -22,8 +22,7 @@ website_coverpage = url_request.content
 website_soup = BeautifulSoup(website_coverpage, 'html.parser')
 
 # locating the elements needed
-coverpage_news = website_soup.find_all('div', class_='gel-layout gel-layout--equal')
-
+coverpage_news = website_soup.find_all('div', class_='view-content')
 
 # number of articles to be displayed
 number_of_articles = len(coverpage_news)
@@ -34,14 +33,10 @@ list_links = []
 list_titles = []
 
 for n in np.arange(0, number_of_articles):
-    # ignoring "live pages" since they are not articles
-    if "live" in coverpage_news[n].find('a')['href']:
-        continue
-
     # getting the link of the articles
     link = coverpage_news[n].find('a')['href']
     list_links.append(link)
-    full_link = "https://www.bbc.com" + link
+    full_link = "https://news.un.org" + link
 
     # getting the titles
     tilte = coverpage_news[n].find('a').get_text()
@@ -52,7 +47,7 @@ for n in np.arange(0, number_of_articles):
     article_content = article.content
     soup_article = BeautifulSoup(article_content, "html5lib")
     body = soup_article.find_all('div', class_='srcss-11r1m41-RichTextComponentWrapper ep2nwvo0')
-    x = body[0].find_all('p', class_='ssrcss-7uxr49-RichTextContainer')
+    """x = body.find('p', class_='ssrcss-7uxr49-RichTextContainer')
 
     # unifying the paragraphs
     list_paragraphs = []
@@ -60,6 +55,20 @@ for n in np.arange(0, number_of_articles):
         list_paragraphs.append(paragraph = x[p].get_text())
         final_article = " ".join(list_paragraphs)
 
-    news_content.append(final_article)
+    news_content.append(final_article)"""
 
-print(news_content)
+# storing in a dataframe
+df_features = pd.DataFrame (
+    {
+        'Article Content': news_content
+    }
+)
+
+df_show_info = pd.DataFrame (
+    {
+        'Ariticle Title': list_titles,
+        'Article Link': list_links
+    }
+)
+
+print(df_show_info)
