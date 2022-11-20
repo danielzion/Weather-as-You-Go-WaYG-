@@ -2,6 +2,7 @@ from flask import Flask, abort, render_template
 from configparser import ConfigParser
 import requests
 from os import path
+from news_scrapper import scrapper
 
 
 # the app
@@ -48,6 +49,13 @@ def getForecast(city):
         abort(400, "City Argument Not Found")
 
     return render_template('index.html', title="Weather Forecast", weatherJson=forecast_response)
+
+
+# news route
+@app.route('/wayg-news', methods=['GET'])
+def checkNews():
+    scrap_news = scrapper()
+    return render_template('news.html', news=scrap_news)
 
 
 

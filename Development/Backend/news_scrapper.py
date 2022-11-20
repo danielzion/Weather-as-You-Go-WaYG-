@@ -2,6 +2,7 @@
 from bs4 import BeautifulSoup
 import requests
 import numpy as np
+import pandas as pd
 
 # scrap weather news articles from the web (from a popular website like nasa)
 # get the relevant html tags as text
@@ -29,7 +30,6 @@ def scrapper():
     number_of_articles = len(coverpage_news)
 
     # the content, links and titles
-    news_content = []
     list_links = []
     list_titles = []
     news_img_links = []
@@ -53,10 +53,13 @@ def scrapper():
         list_titles.append(title)
 
     # binding the title, links and image links for each content
-    final_news_content = {}
-    for title in list_titles:
-        for link in list_links:
-            for img in news_img_links:
-                final_news_content[title] = [link, img]
+    # in a pandas dataframe
+    data_features = pd.DataFrame (
+        {
+            'Article Title': list_titles,
+            'Article Links': list_links,
+            'Article Image Links': news_img_links
+        }
+    )
 
-    return final_news_content
+    return data_features
