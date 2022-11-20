@@ -6,7 +6,12 @@ from news_scrapper import scrapper
 
 
 # the app
-app = Flask(__name__, instance_relative_config=True)
+app = Flask(
+    __name__,
+    instance_relative_config=True,
+    template_folder='../Frontend/', # relative path to template folder
+    static_folder='../Frontend/static/' # relative path to static folder
+)
 
 ICONS = path.join("static", "icons")
 
@@ -22,7 +27,12 @@ config.read(config_file)
 weather_api = config['api_key']['key']
 
 
-# main route
+# homepage route
+@app.route('/home-page')
+def homepage():
+    return render_template('home.html')
+
+# main weather route
 @app.route("/show-forecast/<city>", methods=['GET'])
 def getForecast(city):
     
@@ -48,7 +58,7 @@ def getForecast(city):
     else:
         abort(400, "City Argument Not Found")
 
-    return render_template('index.html', title="Weather Forecast", weatherJson=forecast_response)
+    return render_template('weather.html', title="Weather As You Go (WAY-G) - Index", weatherJson=forecast_response)
 
 
 # news route
