@@ -1,14 +1,22 @@
+from __future__ import print_function
 from flask import Flask, abort, render_template, request 
 from configparser import ConfigParser
-# import requests
+
 from os import path
+import os
 from news_scrapper import scrapper
 
 # import json to load JSON data to a python dictionary 
 import json 
 
 # urllib.request to make a request to api 
-import urllib.request 
+from urllib.parse import urlparse, urlencode
+from urllib.request import urlopen, Request
+from urllib.error import HTTPError
+
+from flask import make_response
+import requests
+
 
 app = Flask(__name__) 
 
@@ -112,7 +120,96 @@ def get_latitude_longitude(city):
 
     return result
 
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    req = request.get_json(silent=True, force=True)
+    #return 'hello'
+    # print(f"Req: {req}")
+
+
+    res = processRequest(req)
+
+    # print(res)
+    return res
+
+
+def processRequest(req):
+    if req.get("queryResult").get("action") != "weather":
+        return {}
+    baseurl = "http://api.openweathermap.org/data/2.5/weather?q={}&units=imperial&appid=48a09fb347f5f6bd562f1f58287eda4f"
+    yql_query,city = makeYqlQuery(req)
+    if yql_query is None:
+        return {}
+    r = requests.get(baseurl.format(city)).json()
+
+    res = makeWebhookResult(r,city)
+    return res
+
+
+def makeYqlQuery(req):
+    #print(req)
+    req=req.get("queryResult")
+    parameters = req.get("parameters")
+    # print(parameters)
+    result = parameters.get("address")
+    print("---------")
+    print(f"result: {result}")
+
+    #result=result[0]
+    city=result['city']
+
+    #print(result.get('city'))
+   # parameters = result.get("parameters")
+    #city = result.get("city")
+    if city is None:
+        return None
+    return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')",city
+
+
+def makeWebhookResult(data,city):
+   main1=data['weather'][0]
+   main2=data['main']
+   celsius=(main2['temp']-32)*0.5555
+   celsius=truncate(celsius,2)
+   #print(type(main2['temp']))
+   speech = "Today the weather in " + city + " is " + main1['description'] + \
+              ", And today's temperature is " + str(celsius) + "^" + 'C'
+   return {
+        "fulfillmentText": speech,
+        "displayText": speech,
+        # "data": data,
+        # "contextOut": [],
+        "source": "apiai-weather-webhook-sample"
+    }
+def truncate(num, n):
+    integer = int(num * (10**n))/(10**n)
+    return float(integer)
+
+@app.route('/test', methods=['GET'])
+def test():
+    return  "Hello there my friend !!"
+
+@app.route('/static_reply', methods=['POST'])
+def static_reply():
+    speech = "Hello there, this reply is from the webhook !! "
+    my_result =  {
+        "speech": speech,
+        "displayText": speech,
+        # "data": data,
+        # "contextOut": [],
+       # "source": "apiai-weather-webhook-sample"
+    }
+    res = json.dumps(my_result, indent=4)
+    r = make_response(res)
+    r.headers['Content-Type'] = 'application/json'
+    return r
+
+
 
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    port = int(os.getenv('PORT', 5000))
+
+    print("Starting app on port %d" % port)
+
+    app.run(debug=True, port=port, host='0.0.0.0')
