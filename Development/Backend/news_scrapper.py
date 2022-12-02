@@ -59,14 +59,13 @@ def scrapper():
         article = requests.get(full_link)
         article_content = article.content
         soup_article = BeautifulSoup(article_content, "html.parser")
-        main_body = soup_article.find('div', class_='l-col l-col--8')
-        paragraphs = main_body.find_all('p')
+        # searching for paragraphs
+        main_body = soup_article.find('div', class_='l-col l-col--8').find_all('p')
 
         # unifying the paragraphs
         list_paragraphs = []
-        for p in np.arange(0, len(paragraphs)):
-            paragraph = paragraphs[p].get_text()
-            list_paragraphs.append(paragraph)
+        for p in np.arange(0, len(main_body)):
+            list_paragraphs.append(main_body[p].get_text())
             final_article = " ".join(list_paragraphs)
         news_content.append(final_article)
 
