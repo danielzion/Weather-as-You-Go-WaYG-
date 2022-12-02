@@ -33,6 +33,7 @@ def scrapper():
     list_links = []
     list_titles = []
     news_img_links = []
+    news_content = []
 
     for n in np.arange(0, number_of_articles):
         if "live" in coverpage_news:
@@ -52,13 +53,31 @@ def scrapper():
         title = coverpage_news[n].find('a').get_text()
         list_titles.append(title)
 
+        # getting the full text content of the page
+        # once the ('a')['href'] link is clicked
+        # reading the content (divided into paragraphs)
+        article = requests.get(full_link)
+        article_content = article.content
+        soup_article = BeautifulSoup(article_content, "html.parser")
+        main_body = soup_article.find('div', class_='l-col l-col--8')
+        paragraphs = main_body.find_all('p')
+
+        # unifying the paragraphs
+        list_paragraphs = []
+        for p in np.arange(0, len(paragraphs)):
+            paragraph = paragraphs[p].get_text()
+            list_paragraphs.append(paragraph)
+            final_article = " ".join(list_paragraphs)
+        news_content.append(final_article)
+
     # binding the title, links and image links for each content
     # in a pandas dataframe
     data_features = pd.DataFrame (
         {
             'Article Title': list_titles,
             'Article Links': list_links,
-            'Article Image Links': news_img_links
+            'Article Image Links': news_img_links,
+            'Article Content': news_content
         }
     )
 

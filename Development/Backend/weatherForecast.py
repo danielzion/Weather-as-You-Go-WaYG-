@@ -10,7 +10,7 @@ app = Flask(
     __name__,
     instance_relative_config=True,
     template_folder='../Frontend/', # relative path to template folder
-    static_folder='../Frontend/static/' # relative path to static folder
+    static_folder='../Frontend/static/', # relative path to static folder
 )
 
 ICONS = path.join("static", "icons")
@@ -48,7 +48,7 @@ def getForecast(city):
                 'APPID': weather_api,
                 'units': 'metric',
                 'lat': str(coordinates[0]),
-                'lon': str(coordinates[0])
+                'lon': str(coordinates[1])
             }
 
             forecast_response = requests.get(weather_url, params=url_params).json()
@@ -58,7 +58,7 @@ def getForecast(city):
     else:
         abort(400, "City Argument Not Found")
 
-    return render_template('weather.html', title="Weather As You Go (WAY-G) - Index", weatherJson=forecast_response)
+    return render_template('index.html', title="Weather As You Go (WAY-G) - Index", weatherJson=forecast_response)
 
 
 # news route
