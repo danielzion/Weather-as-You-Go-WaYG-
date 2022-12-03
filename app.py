@@ -1,24 +1,25 @@
 from __future__ import print_function
-from flask import Flask, abort, render_template, request 
+from flask import Flask, abort, render_template, request
 from configparser import ConfigParser
 
 from os import path
 import os
 from news_scrapper import scrapper
 
-# import json to load JSON data to a python dictionary 
-import json 
+# import json to load JSON data to a python dictionary
+import json
 
-# urllib.request to make a request to api 
+# urllib.request to make a request to api
 from urllib.parse import urlparse, urlencode
 from urllib.request import urlopen, Request
 from urllib.error import HTTPError
+import urllib
 
 from flask import make_response
 import requests
 
 
-app = Flask(__name__) 
+app = Flask(__name__)
 
 ICONS = path.join("static", "icons")
 
@@ -44,19 +45,19 @@ def weather():
         forecast = urllib.request.urlopen('http://api.openweathermap.org/data/2.5/forecast?q='+city + '&appid=' + api).read()
     except:
         city = 'lagos'
-        
-        source = urllib.request.urlopen('http://api.openweathermap.org/data/2.5/weather?q='+city + '&appid=' + api).read() 
+
+        source = urllib.request.urlopen('http://api.openweathermap.org/data/2.5/weather?q='+city + '&appid=' + api).read()
         list_of_data = json.loads(source)
-        data = { 
-		"country_code": str(list_of_data['sys']['country']), 
+        data = {
+		"country_code": str(list_of_data['sys']['country']),
 		"coordinate": str(list_of_data['coord']['lon']) + ' '
-					+ str(list_of_data['coord']['lat']), 
-		# "temp": str(list_of_data['main']['temp']) + 'k', 
-		"pressure": str(list_of_data['main']['pressure']), 
-		"humidity": str(list_of_data['main']['humidity']), 
+					+ str(list_of_data['coord']['lat']),
+		# "temp": str(list_of_data['main']['temp']) + 'k',
+		"pressure": str(list_of_data['main']['pressure']),
+		"humidity": str(list_of_data['main']['humidity']),
         "cityname": city.replace('+', ' '),
         "temp_cel": str(round(list_of_data['main']['temp']-273.15,2)),
-        "temp_max_cel": str(round(list_of_data['main']['temp_max']-273.15,2)),     
+        "temp_max_cel": str(round(list_of_data['main']['temp_max']-273.15,2)),
         "temp_min_cel": str(round(list_of_data['main']['temp_min']-273.15,2)),
         "desc": list_of_data['weather'][0]['description'],
         'icon': list_of_data['weather'][0]['icon'],
@@ -69,16 +70,16 @@ def weather():
 
         return render_template('weather.html', msg='City name invalid!', data=data, forecast_data=forecast_data)
     list_of_data = json.loads(source)
-    data = { 
-		"country_code": str(list_of_data['sys']['country']), 
+    data = {
+		"country_code": str(list_of_data['sys']['country']),
 		"coordinate": str(list_of_data['coord']['lon']) + ' '
-					+ str(list_of_data['coord']['lat']), 
-		# "temp": str(list_of_data['main']['temp']) + 'k', 
-		"pressure": str(list_of_data['main']['pressure']), 
-		"humidity": str(list_of_data['main']['humidity']), 
+					+ str(list_of_data['coord']['lat']),
+		# "temp": str(list_of_data['main']['temp']) + 'k',
+		"pressure": str(list_of_data['main']['pressure']),
+		"humidity": str(list_of_data['main']['humidity']),
         "cityname": city.replace('+', ' '),
         "temp_cel": str(round(list_of_data['main']['temp']-273.15,2)),
-        "temp_max_cel": str(round(list_of_data['main']['temp_max']-273.15,2)),     
+        "temp_max_cel": str(round(list_of_data['main']['temp_max']-273.15,2)),
         "temp_min_cel": str(round(list_of_data['main']['temp_min']-273.15,2)),
         "desc": list_of_data['weather'][0]['description'],
         'icon': list_of_data['weather'][0]['icon'],
@@ -91,15 +92,15 @@ def weather():
 
     print(forecast_data)
 
-    return render_template('weather.html', data = data, forecast_data=forecast_data) 
+    return render_template('weather.html', data = data, forecast_data=forecast_data)
 
 
 # news route
 @app.route('/wayg-news', methods=['GET'])
 def news():
-    titles,article_links,article_img_links=scrapper()
+    titles,article_links,article_img_links,news_contents=scrapper()
 
-    return render_template('news.html',titles=titles,article_links=article_links,article_img_links=article_img_links)
+    return render_template('news.html',titles=titles,article_links=article_links,article_img_links=article_img_links,news_contents=news_contents)
 
 
 
