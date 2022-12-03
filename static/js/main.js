@@ -29,7 +29,7 @@
   }
 
   /**
-   * Easy on scroll event listener 
+   * Easy on scroll event listener
    */
   const onscroll = (el, listener) => {
     el.addEventListener('scroll', listener)
@@ -160,7 +160,7 @@
   }
 
   /**
-   * Initiate  glightbox 
+   * Initiate  glightbox
    */
   const glightbox = GLightbox({
     selector: '.glightbox'
@@ -214,7 +214,7 @@
   });
 
   /**
-   * Initiate portfolio lightbox 
+   * Initiate portfolio lightbox
    */
   const portfolioLightbox = GLightbox({
     selector: '.portfolio-lightbox'
@@ -250,3 +250,17 @@
   });
 
 })()
+
+
+
+
+const dfMessenger = document.querySelector('df-messenger');
+            dfMessenger.addEventListener('df-messenger-loaded', function () {
+                // Handle event
+                let dfIcon = dfMessenger?.shadowRoot?.querySelector("#widgetIcon");
+                if(dfIcon) {
+                    dfIcon.style.bottom = "60px";
+                }
+            });
+
+
